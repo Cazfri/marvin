@@ -1,5 +1,4 @@
 # Marvin
-My very own smart home API
 
 ## What is this?
 This is a Flask API server that controls smart home appliances. The server is deployed using Nginx and Supervisord, and orchestrated with Docker. Currently it only controls Phillips Hue bulbs, but the server API can easily be extended for other appliances.
