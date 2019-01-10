@@ -8,7 +8,7 @@ VERSION = 0.1
 QUIT_OPTIONS = ['quit', 'exit', 'q']
 HELP_OPTIONS = ['-h', '--help', 'help', 'h', '?']
 
-API_ADDRESS = 'http://127.0.0.1'
+API_ADDRESS = 'http://noahpi1'
 API_PORT = '5000'
 API_URL_BASE = '/'
 API_ENDPOINT_BASE = API_ADDRESS + ':' + API_PORT + API_URL_BASE
