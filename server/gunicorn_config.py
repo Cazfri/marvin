@@ -1,7 +1,7 @@
 # Gunicorn config file
 
 # Number of workers
-workers = 1
+workers = 3
 
 # Run gunicorn as a daemon
 daemon = True
