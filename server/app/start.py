@@ -4,8 +4,11 @@ import sys
 from flask import Flask
 from flask.logging import default_handler
 
+from flask_cors import CORS
+
 # Flask setup
 app = Flask('marvin')
+CORS(app)
 
 # Import routing entry points
 import lights.request_handler as lights_handler
