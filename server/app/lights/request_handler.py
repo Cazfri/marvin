@@ -29,7 +29,7 @@ def scenes():
         print(scenes)
         return response([{'id': scene.scene_id, 'name': scene.name} for scene in scenes])
     elif request.method == 'POST':
-        if request.headers['Content-Type'] != 'application/json': # TODO: This could probably be if request.json
+        if not 'application/json' in request.headers['Content-Type']: # TODO: This could probably be if request.json
             return error_response('Invalid content-type: only json requests are accepted', 400)
         scene_name = request.json['sceneName']
         HueController().load_scene(scene_name)
