@@ -2,9 +2,10 @@ import logging
 import sys
 
 from flask import Flask
+from flask.logging import default_handler
 
 # Flask setup
-app = Flask(__name__)
+app = Flask('marvin')
 
 # Import routing entry points
 import lights.request_handler as lights_handler
@@ -38,11 +39,25 @@ app.add_url_rule(LIGHTS_URL + 'scenes',
                  lights_handler.scenes,
                  methods=['GET', 'POST'])
 
+# POST /lights/push (turn off all lights)
+app.add_url_rule(LIGHTS_URL + 'push',
+                 'lights_push',
+                 lights_handler.push,
+                 methods=['POST'])
+
+# Python logger setup
+logging.basicConfig(filename='../logs/marvin.log', format='[%(asctime)s] %(levelname)s: %(message)s')
 
 # Logging setup
 app.logger.setLevel(logging.INFO)
 
+# Basic setup
+app.port=5000
+app.host='0.0.0.0'
+
+# All done!
+app.logger.info('Starting app...')
+
 #app.add_url_rule(BASE_URL, 'test', lights_handler.test)
 if __name__ == '__main__':
-    print('Starting app...')
-    app.run(host='0.0.0.0', debug=True, port=5000)
+    app.run(debug=True)
