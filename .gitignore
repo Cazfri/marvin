@@ -109,3 +109,6 @@ pytest-venv
 
 # VSCode files
 .vscode
+
+# .DS_Store
+.DS_Store
