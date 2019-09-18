@@ -112,3 +112,6 @@ pytest-venv
 
 # .DS_Store
 .DS_Store
+
+# Don't commit node_modules
+node_modules/
