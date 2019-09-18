@@ -8,17 +8,14 @@ VERSION = 0.1
 QUIT_OPTIONS = ['quit', 'exit', 'q']
 HELP_OPTIONS = ['-h', '--help', 'help', 'h', '?']
 
-API_ADDRESS = 'http://noahpi1'
-API_PORT = '5000'
-API_URL_BASE = '/'
-API_ENDPOINT_BASE = API_ADDRESS + ':' + API_PORT + API_URL_BASE
+def make_server_url(base_address='http://noahpi1', port=5000, url_base='/'):
+    return base_address + ':' + str(port) + url_base
 
 # Lights constants
 # Examples: "marvin lights on", "marvin lights off"
 LIGHTS_CMD_OPTIONS = ['on', 'off', 'scenes', 'day', 'night']
 LIGHTS_CMD_NAME = 'lights_cmd'
 
-LIGHTS_ENDPOINT = API_ENDPOINT_BASE + 'lights/'
 
 # Hack to have ArgumentParser throw an exception rather than sys.exit() when it
 # encounters bad input
@@ -51,25 +48,26 @@ def error_response(resp):
     print("Error ({}) handling request: {}".format(resp.status_code, error))
 
 # Command interpretation logic
-def run(args):
+def run(args, server_url):
     try:
         # Make request to lights endpoint
         if LIGHTS_CMD_NAME in args:
+            lights_endpoint = server_url + 'lights/'
             cmd_val = args[LIGHTS_CMD_NAME]
             print('lights command (' + LIGHTS_CMD_NAME + '): ' + cmd_val)
             if cmd_val == 'on':
-                post(LIGHTS_ENDPOINT + 'on')
+                post(lights_endpoint + 'on')
             elif cmd_val == 'off':
-                post(LIGHTS_ENDPOINT + 'off')
+                post(lights_endpoint + 'off')
             elif cmd_val == 'scenes':
-                scenes = get(LIGHTS_ENDPOINT + 'scenes')
+                scenes = get(lights_endpoint + 'scenes')
                 print('Possible scenes are:')
                 for scene in scenes:
                     print(scene['name'])
             elif cmd_val == 'day':
-                post(LIGHTS_ENDPOINT + 'scenes', data={'sceneName': 'Read'})
+                post(lights_endpoint + 'scenes', data={'sceneName': 'Read'})
             elif cmd_val == 'night':
-                post(LIGHTS_ENDPOINT + 'scenes', data={'sceneName': 'Relax'})
+                post(lights_endpoint + 'scenes', data={'sceneName': 'Relax'})
         else:
             print('Error: command "{}" not found. Try "help" to see list of commands')
             return
@@ -82,6 +80,7 @@ def main():
     parser.add_argument('--version',
                         action='version',
                         version='%(prog)s ' + str(VERSION))
+    parser.add_argument('--url')
     subparsers = parser.add_subparsers()
 
     # Set up lights subparser
@@ -93,6 +92,8 @@ def main():
 
     # Interpret arguments given
     args = vars(parser.parse_args())
+    server_url = make_server_url(args['url']) if args['url'] else make_server_url()
+    args.pop('url')
 
     if len(args) == 0: # Interactive mode
         print("Marvin v{} started in interactive mode".format(str(VERSION)))
@@ -124,12 +125,12 @@ def main():
                 # for interactive commands, but hey it's easier than writing the
                 # parsing logic myself
                 inter_args = vars(parser.parse_args(cmd.split()))
-                run(inter_args)
+                run(inter_args, server_url)
             except ArgumentParserError as error:
                 print(error)
                 continue
     else:
-        run(args)
+        run(args, server_url)
 
 if __name__ == '__main__':
     main()
