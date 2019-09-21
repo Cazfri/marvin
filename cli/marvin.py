@@ -16,6 +16,8 @@ def make_server_url(base_address='http://noahpi1', port=5000, url_base='/'):
 LIGHTS_CMD_OPTIONS = ['on', 'off', 'scenes', 'day', 'night']
 LIGHTS_CMD_NAME = 'lights_cmd'
 
+LIGHTS_COLOR_CMD_OPTIONS = ['lcolor']
+LIGHTS_COLOR_CMD_NAME = 'lights_color_cmd'
 
 # Hack to have ArgumentParser throw an exception rather than sys.exit() when it
 # encounters bad input
@@ -50,9 +52,9 @@ def error_response(resp):
 # Command interpretation logic
 def run(args, server_url):
     try:
+        lights_endpoint = server_url + 'lights/'
         # Make request to lights endpoint
         if LIGHTS_CMD_NAME in args:
-            lights_endpoint = server_url + 'lights/'
             cmd_val = args[LIGHTS_CMD_NAME]
             print('lights command (' + LIGHTS_CMD_NAME + '): ' + cmd_val)
             if cmd_val == 'on':
@@ -68,6 +70,17 @@ def run(args, server_url):
                 post(lights_endpoint + 'scenes', data={'sceneName': 'Read'})
             elif cmd_val == 'night':
                 post(lights_endpoint + 'scenes', data={'sceneName': 'Relax'})
+        # Lights color needs to be separate from lights. I guess using the
+        # argparser like this really is a hack.
+        if LIGHTS_COLOR_CMD_NAME in args:
+            rgb = args[LIGHTS_COLOR_CMD_NAME]
+            post(lights_endpoint + 'color',
+                data={ 'rgb': {
+                    'r': rgb[0],
+                    'g': rgb[1],
+                    'b': rgb[2],
+                }}
+            )
         else:
             print('Error: command "{}" not found. Try "help" to see list of commands')
             return
@@ -89,6 +102,12 @@ def main():
                                action='store',
                                type=str,
                                choices=LIGHTS_CMD_OPTIONS)
+
+    lights_parser = subparsers.add_parser('lcolor')
+    lights_parser.add_argument(LIGHTS_COLOR_CMD_NAME,
+                               nargs=3,
+                               action='store',
+                               type=int)
 
     # Interpret arguments given
     args = vars(parser.parse_args())

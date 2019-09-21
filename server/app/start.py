@@ -42,6 +42,13 @@ app.add_url_rule(LIGHTS_URL + 'scenes',
                  lights_handler.scenes,
                  methods=['GET', 'POST'])
 
+# TODO: GET /lights/color (Get current colors)
+# POST /lights/color (Set lights to color)
+app.add_url_rule(LIGHTS_URL + 'color',
+                 'lights_color',
+                 lights_handler.color,
+                 methods=['POST'])
+
 # POST /lights/push (turn off all lights)
 app.add_url_rule(LIGHTS_URL + 'push',
                  'lights_push',
@@ -49,6 +56,7 @@ app.add_url_rule(LIGHTS_URL + 'push',
                  methods=['POST'])
 
 # Python logger setup
+# TODO: Add process id (or somehow worker id) to log line
 logging.basicConfig(filename='../logs/marvin.log', format='[%(asctime)s] %(levelname)s: %(message)s')
 
 # Logging setup

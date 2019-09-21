@@ -38,6 +38,29 @@ def scenes():
     else:
         return error_response('Method ' + request.method + ' not allowed', 405)
 
+def color():
+    req_json = request.json
+    if 'rgb' in req_json:
+        rgb = request.json['rgb']
+
+        for required_key in 'r', 'g', 'b':
+            if required_key not in rgb:
+                return error_response('rgb values must contain r, g, and b', 400)
+
+        red = rgb['r']
+        green = rgb['g']
+        blue = rgb['b']
+        for color_vals in [['red', red], ['green', green], ['blue', blue]]:
+            color_name = color_vals[0]
+            value = color_vals[1]
+            if value > 255 or value < 0:
+                return error_response('{} value must be between 0 and 255 (inclusive)'.format(color_name), 400)
+
+        HueController().set_color_rgb(red, green, blue)
+        return response()
+    else:
+        return error_response('POST body must contain \'rgb\' key', 400)
+
 def push(): # TODO: Finish this
     print(request.json)
     log.info("Setting lights to status: {}".format())
