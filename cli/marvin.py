@@ -72,7 +72,7 @@ def run(args, server_url):
                 post(lights_endpoint + 'scenes', data={'sceneName': 'Relax'})
         # Lights color needs to be separate from lights. I guess using the
         # argparser like this really is a hack.
-        if LIGHTS_COLOR_CMD_NAME in args:
+        elif LIGHTS_COLOR_CMD_NAME in args:
             rgb = args[LIGHTS_COLOR_CMD_NAME]
             post(lights_endpoint + 'color',
                 data={ 'rgb': {
