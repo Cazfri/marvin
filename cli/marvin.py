@@ -82,7 +82,7 @@ def run(args, server_url):
                 }}
             )
         else:
-            print('Error: command "{}" not found. Try "help" to see list of commands')
+            print('Error: command not found. Try "help" to see list of commands')
             return
     except requests.exceptions.ConnectionError as err:
         print('Error making request: {}\nIs the server running and accepting conections?'.format(err))
