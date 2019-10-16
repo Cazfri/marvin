@@ -4,7 +4,7 @@ from phue import Bridge
 # user = 'nmartinruben'
 # username = 'lkmHfRB0ScuElOrTXS2VUFMsyrEJ9KGINdyme5Y5'
 
-BRIDGE_IP = '192.168.1.82'
+BRIDGE_IP = '192.168.1.40'
 ROOM_NAME = 'Noah Bedroom'
 
 class Singleton(type):
